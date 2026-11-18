@@ -1,0 +1,213 @@
+#!/usr/bin/env python3
+"""bring up a floor's stack, ask the questions from its workshop page, run its checks, tear it all down.
+
+  scripts/floor-stack --floor 5          Amazon Nova 2 Lite, as the floor ships (needs bedrock credentials)
+  scripts/floor-stack --floor 7 --ec2    every agent on the writing-gpu ollama host, via strands-ec2 --replace-bedrock
+
+floor 5: rules agent :8000, character agent :8001, dice mcp :8002, narrator orchestrator :8009; the four
+Floor Boss questions (floor-5-3.md). floor 7: the same services with the strands-harness narrator; one
+question, a narrator restart, then the resume and dance-off questions with the page's checks (floor-7.md).
+each process runs in its own process group so teardown kills the whole tree. run state the floors write
+into the repo (characters.json, 7_strands_harness/.agent/) is restored afterwards; the floor 7 session
+snapshot is kept under the state dir. logs and a json summary: ~/.local/state/floor-stack/
+"""
+
+import argparse
+import datetime as dt
+import json
+import os
+import shutil
+import signal
+import socket
+import subprocess
+import sys
+import time
+import urllib.request
+
+ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+FLOOR = os.path.join(ROOT, "dungeon", "5_a2a_integration")
+STATE = os.path.join(os.environ.get("XDG_STATE_HOME", os.path.expanduser("~/.local/state")), "floor-stack")
+HARNESS_DIR = os.path.join(ROOT, "dungeon", "7_strands_harness")
+BACKEND = [
+    ("rules", 8000, os.path.join(FLOOR, "agents", "rules_agent", "rules_agent.py")),
+    ("character", 8001, os.path.join(FLOOR, "agents", "character_agent", "character_agent.py")),
+    ("dice-mcp", 8002, os.path.join(ROOT, "dungeon", "4_mcp_integration", "dice_roll_mcp_server.py")),
+]
+RUN_STATE = [os.path.join(FLOOR, "agents", "character_agent", "characters.json"), os.path.join(HARNESS_DIR, ".agent")]
+SESSION_DIR = os.path.join(HARNESS_DIR, ".agent", "sessions", "session", "seattle-campaign")
+
+
+def snapshot():
+    """snapshot_latest.json under the session. strands keeps it at scopes/agent/<agent_id>/snapshots/"""
+    import glob
+
+    found = glob.glob(os.path.join(SESSION_DIR, "**", "snapshot_latest.json"), recursive=True)
+    return found[0] if found else None
+
+
+def text(body):
+    return json.dumps(body.get("response", body)).lower()
+
+
+def rolls(body):
+    r = body.get("response", {}) if isinstance(body.get("response"), dict) else {}
+    return len(r.get("dice_rolls") or [])
+
+
+FLOORS = {
+    "5": {
+        "narrator": os.path.join(FLOOR, "agents", "narrator_orchestrator", "narrator_orchestrator.py"),
+        "steps": [
+            {"q": "How does the Final Beat work?"},
+            {"q": "Register the party with the System: Cordula Vance and Barnaby."},
+            {"q": "What are Barnaby's Dexterity and Mana?"},
+            {"q": "Cordula challenges the Quarterly Close Accountant to a dance-off at the Pier 59 collapse. Run round one."},
+        ],
+    },
+    "7": {
+        "narrator": os.path.join(HARNESS_DIR, "narrator_harness.py"),
+        "steps": [
+            {"q": "Look up the party and tell me Cordula's Groove before we head into the Ship Canal."},
+            {"restart": True},
+            {"q": "Where did we stop last time, and what was Cordula's Groove?",
+             "check": ("resume names the ship canal and groove 17", lambda b: "ship canal" in text(b) and "17" in text(b))},
+            {"q": "Dawn on the bluffs: the Ferry-Line Commuter Horde comes up the cliff path, travel mugs first. Cordula challenges them to a dance-off. Run all three rounds, and use her Groove from before the restart.",
+             "check": ("dance-off logs at least six dice rolls", lambda b: rolls(b) >= 6)},
+        ],
+        "final_checks": [("session snapshot_latest.json exists", lambda: snapshot() is not None)],
+    },
+}
+
+
+def port_open(port):
+    with socket.socket() as s:
+        s.settimeout(0.5)
+        return s.connect_ex(("127.0.0.1", port)) == 0
+
+
+def runner(ec2):
+    if not ec2:
+        return ["uv", "run", "-q", "--project", ROOT, "python"]
+    tool = os.environ.get("STRANDS_EC2") or shutil.which("strands-ec2")
+    if not tool:
+        sys.exit("--ec2 needs strands-ec2 on PATH or STRANDS_EC2 set (heraldstack-infra terraform/writing-gpu/bench)")
+    return ["uv", "run", "-q", "--project", ROOT, "--with", "ollama", "python", tool, "--replace-bedrock", "--note", "floor5-stack"]
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--floor", choices=sorted(FLOORS), default="5")
+    ap.add_argument("--ec2", action="store_true")
+    ap.add_argument("--ready-timeout", type=int, default=180)
+    a = ap.parse_args()
+    os.makedirs(STATE, exist_ok=True)
+    spec = FLOORS[a.floor]
+    services = BACKEND + [("narrator", 8009, spec["narrator"])]
+    busy = [p for _, p, _ in services if port_open(p)]
+    if busy:
+        sys.exit(f"ports already in use: {busy}; stop whatever holds them first")
+
+    kb = os.path.join(FLOOR, "utils", "rules_knowledge_base")
+    if not os.path.isdir(kb):
+        print("building the rules knowledge base (utils/create_knowledge_base.py)", flush=True)
+        subprocess.run(["uv", "run", "-q", "--project", ROOT, "python", os.path.join(FLOOR, "utils", "create_knowledge_base.py")],
+                       cwd=os.path.join(FLOOR, "utils"), check=True)
+
+    saved = {}
+    for path in RUN_STATE:
+        backup = os.path.join(STATE, "saved-" + os.path.basename(path))
+        if os.path.exists(backup):
+            shutil.rmtree(backup) if os.path.isdir(backup) else os.remove(backup)
+        if os.path.isdir(path):
+            shutil.copytree(path, backup)
+        elif os.path.exists(path):
+            shutil.copy2(path, backup)
+        saved[path] = backup if os.path.exists(path) else None
+
+    procs, results, checks, rc = {}, [], [], 0
+
+    def start(name, port, script):
+        log = open(os.path.join(STATE, f"{name}.log"), "a")
+        procs[name] = subprocess.Popen(runner(a.ec2) + [script], cwd=os.path.dirname(script), stdout=log,
+                                       stderr=subprocess.STDOUT, start_new_session=True)
+        deadline = time.time() + a.ready_timeout
+        while not port_open(port):
+            if procs[name].poll() is not None or time.time() > deadline:
+                raise SystemExit(f"{name} did not listen on :{port}; see {STATE}/{name}.log")
+            time.sleep(1)
+        print(f"up: {name} :{port}", flush=True)
+
+    def stop(name):
+        p = procs.pop(name)
+        try:
+            os.killpg(p.pid, signal.SIGTERM)
+            p.wait(timeout=15)
+        except ProcessLookupError:
+            pass
+        except subprocess.TimeoutExpired:
+            os.killpg(p.pid, signal.SIGKILL)
+
+    try:
+        for name in ("rules", "character", "dice-mcp", "narrator"):
+            open(os.path.join(STATE, f"{name}.log"), "w").close()
+        for svc in services:
+            start(*svc)
+        for step in spec["steps"]:
+            if step.get("restart"):
+                stop("narrator")
+                while port_open(8009):
+                    time.sleep(0.5)
+                print("narrator stopped; restarting", flush=True)
+                start("narrator", 8009, spec["narrator"])
+                continue
+            q = step["q"]
+            t = time.time()
+            req = urllib.request.Request("http://127.0.0.1:8009/inquire", json.dumps({"question": q}).encode(), {"Content-Type": "application/json"})
+            try:
+                with urllib.request.urlopen(req, timeout=600) as r:
+                    body, status = json.loads(r.read()), r.status
+            except urllib.error.HTTPError as e:
+                body, status = {"error": e.read().decode(errors="replace")[:300]}, e.code
+            wall = round(time.time() - t, 1)
+            ok = status == 200 and "response" in body
+            rc |= 0 if ok else 1
+            results.append({"question": q, "status": status, "wall_s": wall, "ok": ok, "body": body})
+            print(f"\n{'PASS' if ok else 'FAIL'} {wall:>6}s  {q}\n{json.dumps(body.get('response', body), indent=1)[:1200]}", flush=True)
+            if "check" in step:
+                label, fn = step["check"]
+                passed = bool(ok and fn(body))
+                checks.append({"check": label, "ok": passed})
+                rc |= 0 if passed else 1
+                print(f"{'PASS' if passed else 'FAIL'} check: {label}", flush=True)
+        for label, fn in spec.get("final_checks", []):
+            passed = bool(fn())
+            checks.append({"check": label, "ok": passed})
+            rc |= 0 if passed else 1
+            print(f"{'PASS' if passed else 'FAIL'} check: {label}", flush=True)
+    finally:
+        for name in list(procs)[::-1]:
+            stop(name)
+        left = [port for _, port, _ in services if port_open(port)]
+        print(f"\nteardown: {'clean' if not left else f'ports still open {left}'}")
+        if snapshot():
+            shutil.copy2(snapshot(), os.path.join(STATE, f"floor{a.floor}-session-snapshot.json"))
+        for path, backup in saved.items():
+            if os.path.isdir(path):
+                shutil.rmtree(path)
+            elif os.path.exists(path):
+                os.remove(path)
+            if backup:
+                shutil.copytree(backup, path) if os.path.isdir(backup) else shutil.copy2(backup, path)
+        print("run state restored: " + ", ".join(os.path.relpath(p, ROOT) for p in saved))
+
+    asked = [st for st in spec["steps"] if "q" in st]
+    summary = {"at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "floor": a.floor, "ec2": a.ec2,
+               "passed": sum(r["ok"] for r in results), "of": len(asked), "checks": checks, "results": results}
+    with open(os.path.join(STATE, "runs.jsonl"), "a") as f:
+        f.write(json.dumps(summary) + "\n")
+    print(f"floor {a.floor}: {summary['passed']}/{summary['of']} answered, {sum(c['ok'] for c in checks)}/{len(checks)} checks. log: {STATE}/runs.jsonl")
+    return rc
+
+
+if __name__ == "__main__":
+    sys.exit(main())
