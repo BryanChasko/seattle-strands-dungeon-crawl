@@ -12,6 +12,9 @@ Run it from this folder, with the workshop environment active:
 
 from strands import Agent, Skill
 # TODO: Step 1 - Import AgentSkills and tool from strands, Plugin and hook from strands.plugins, and BeforeToolCallEvent from strands.hooks
+from strands import AgentSkills, tool
+from strands.hooks import BeforeToolCallEvent
+from strands.plugins import Plugin, hook
 
 EXCLUSION_RADIUS_M = 500  # nothing may be inside this radius of the pad at ignition
 
@@ -58,8 +61,36 @@ def beach_scan(radius_m: int) -> list[dict]:
 
 
 # TODO: Step 2 - Write class RangeCrew(Plugin): name "range-crew", a @tool method read_countdown that returns pad_clock(), a @tool method debris_check(radius_m: int = EXCLUSION_RADIUS_M) that returns beach_scan(radius_m), and a @hook method note_call(self, event: BeforeToolCallEvent) that appends event.tool_use["name"] to range_log
+class RangeCrew(Plugin):
+    name = "range-crew"
+
+    @tool
+    def read_countdown(self) -> dict:
+        """Read the pad clock: seconds to launch, chamber pressure and propellant load.
+
+        Returns:
+            t_minus_seconds, chamber_pressure_pct (the safe band is 90 to 105) and propellant_load_pct.
+        """
+        return pad_clock()
+
+    @tool
+    def debris_check(self, radius_m: int = EXCLUSION_RADIUS_M) -> list:
+        """List everything on the beach and the water within radius_m meters of the pad.
+
+        Args:
+            radius_m: How far from the pad to look, in meters. The default is the exclusion radius.
+
+        Returns:
+            One entry per thing found, with its item and distance_m. An empty list means the radius is clear.
+        """
+        return beach_scan(radius_m)
+
+    @hook
+    def note_call(self, event: BeforeToolCallEvent):
+        range_log.append(event.tool_use["name"])
 
 # TODO: Step 3 - Build the skills plugin: AgentSkills with skills=[HOLD_CALL, PAD_CALLOUT], as skills_plugin
+skills_plugin = AgentSkills(skills=[HOLD_CALL, PAD_CALLOUT])
 
 SYSTEM_PROMPT = """You are the range desk for a static fire on the pad below the bluffs, a subroutine of the System AI.
 A hold call needs both numbers: read the countdown and check the debris before you call anything, and
@@ -77,6 +108,7 @@ def make_director(crew: "RangeCrew") -> Agent:
         system_prompt=SYSTEM_PROMPT,
         callback_handler=None,
         # TODO: Step 4 - Give the agent both plugins: plugins=[crew, skills_plugin]
+        plugins=[crew, skills_plugin],
     )
 
 

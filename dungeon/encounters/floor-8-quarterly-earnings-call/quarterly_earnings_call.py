@@ -16,6 +16,7 @@ from pathlib import Path
 
 from strands import Agent
 # TODO: Step 1 - Import GraphBuilder from strands.multiagent
+from strands.multiagent import GraphBuilder
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # the shared dance floor lives in encounters/
 from dance_floor import dance_round, party_took_the_last_round, scoreboard
@@ -56,7 +57,13 @@ def build_earnings_call():
     # TODO: Step 2 - Create a GraphBuilder and add one executive per AGENDA row as a node, with the row's node id
     # TODO: Step 3 - Connect accountant to banker and banker to rmd, each edge with the party_won condition
     # TODO: Step 4 - Start the call at the accountant, then build and return the graph
-    return None
+    builder = GraphBuilder()
+    for row in AGENDA:
+        builder.add_node(executive(*row), row[0])
+    builder.add_edge("accountant", "banker", condition=party_won)
+    builder.add_edge("banker", "rmd", condition=party_won)
+    builder.set_entry_point("accountant")
+    return builder.build()
 
 
 if __name__ == "__main__":

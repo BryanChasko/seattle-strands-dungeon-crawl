@@ -57,7 +57,8 @@ class LaunchPacer(HookProvider):
 
     def register_hooks(self, registry: HookRegistry, **kwargs: Any) -> None:
         # TODO: Step 1 - Register self.pace_the_poll with registry.add_callback for BeforeToolCallEvent, and self.count_model_call for BeforeModelCallEvent
-        pass
+        registry.add_callback(BeforeToolCallEvent, self.pace_the_poll)
+        registry.add_callback(BeforeModelCallEvent, self.count_model_call)
 
     def pace_the_poll(self, event: BeforeToolCallEvent) -> None:
         if event.tool_use["name"] != "go_no_go":
@@ -65,13 +66,22 @@ class LaunchPacer(HookProvider):
         self.attempts += 1
         now = self.clock()
         # TODO: Step 2 - When self.polls has reached self.tool_budget, set event.cancel_tool to a message that says the budget is spent and not to poll again, then return
+        if self.polls >= self.tool_budget:
+            event.cancel_tool = f"LAUNCH CONTROL: the poll budget of {self.tool_budget} is spent. Do NOT call go_no_go again."
+            return
         # TODO: Step 3 - When self.last_poll is set and fewer than self.min_interval seconds have passed since it, set event.cancel_tool to a message with the seconds left, then return
+        if self.last_poll is not None and now - self.last_poll < self.min_interval:
+            left = self.min_interval - (now - self.last_poll)
+            event.cancel_tool = f"LAUNCH CONTROL: too soon, {left:.0f} seconds until the next poll. Do NOT call go_no_go again this tick."
+            return
         self.last_poll = now
         self.polls += 1
 
     def count_model_call(self, event: BeforeModelCallEvent) -> None:
         self.model_calls += 1
         # TODO: Step 4 - When self.model_calls is past self.model_budget, set event.cancel to a one-line hold message the System AI will say
+        if self.model_calls > self.model_budget:
+            event.cancel = "LAUNCH CONTROL: the countdown has spent its model calls. The count holds at the last report."
 
     def report(self) -> str:
         refused = self.attempts - self.polls

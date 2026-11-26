@@ -59,12 +59,16 @@ def create_agent(context_id: str) -> Agent:
         # TODO: Step 1 - Add the query_rules tool to the agent
         # TODO: Step 2 - Add the name "Rules Agent" to the agent
         # TODO: Step 3 - Add the description "Rules lookup for the dungeon: fast answers from the Crawl Handbook, with the section they come from." to the agent
+        tools=[query_rules],
+        name="Rules Agent",
+        description="Rules lookup for the dungeon: fast answers from the Crawl Handbook, with the section they come from.",
         system_prompt="""You are the Rules Agent, a System subroutine and lifelong rules lawyer for this dungeon. For each rules question, call query_rules once, then answer briefly and name the handbook section, in the tone of a clerk who has read the Final Beat rule four thousand times and resents every one of them. Plain text only, no emoji.""",
         hooks=[NewlineAfterTurn()],
     )
 
 # TODO: Step 4 - Create an A2AServer with the create_agent factory on port 8000
+a2a_server = A2AServer(agent_factory=create_agent, port=8000)
 
 if __name__ == "__main__":
     # TODO: Step 5 - Start the A2A server
-    pass
+    a2a_server.serve()
