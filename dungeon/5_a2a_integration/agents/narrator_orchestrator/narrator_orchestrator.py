@@ -46,6 +46,7 @@ def get_user(user_name):
     return character
 
 # TODO: Step 1 - Create an MCPClient with the url "http://localhost:8002/mcp"
+mcp_client = MCPClient(url="http://localhost:8002/mcp")
 
 class DiceOutput(BaseModel):
     dice_type: str = Field(description="The dice rolled, in dice notation: 1d20, 4d6 drop 1, 2d8")
@@ -66,6 +67,10 @@ NARRATOR_MODEL = BedrockModel(model_id="us.amazon.nova-2-lite-v1:0")
 
 try:
     # TODO: Step 2 - Create the A2A client tool with make_a2a_client and the allowed agent endpoints
+    a2a_client = make_a2a_client(allowed_endpoints=[
+        "http://127.0.0.1:8000",  # Rules Agent
+        "http://127.0.0.1:8001",  # Character Agent
+    ])
 
     agent = Agent(
         model=NARRATOR_MODEL,
@@ -85,6 +90,8 @@ House rules of the broadcast:
 The System AI is petty but exact. Discover the agents you can reach and ask them instead of guessing: rules questions, character creation and lookups are their job. When you call a2a_client, copy the endpoint from its Permitted endpoints list character for character: encoded characters such as %3A stay encoded, and nothing is added, removed, or retyped. Every dice roll goes through roll_dice, and every roll you report is a roll you made. Never make up what a tool can tell you. The Character Agent keeps the party's sheets: look a party member up before you use their stats. If Cordula or Barnaby is not registered yet, register them in the same turn with exactly the cast scores above, never rolled and never asking the player to confirm, then report the sheet the Character Agent returns. If a tool or an agent call fails or returns an error, tell the Crawler the call failed and stop there: never say an agent said or decided something it did not.""",
         # TODO: Step 3 - Add the mcp_client and a2a_client tools to the agent
         # TODO: Step 4 - Force the response to use the StoryOutput model
+        tools=[mcp_client, a2a_client],
+        structured_output_model=StoryOutput,
     )
     print(agent)
 

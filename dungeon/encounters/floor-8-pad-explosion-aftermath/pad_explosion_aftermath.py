@@ -74,7 +74,7 @@ def numbers_in(text: str) -> list[float]:
 def has_figure(report: str, low: float, high: float) -> bool:
     """True when the report holds a number from low to high, both ends included."""
     # TODO: Step 1 - Return True when any number from numbers_in(report) is between low and high
-    return False
+    return any(low <= number <= high for number in numbers_in(report))
 
 
 def explain(case: Case, named: bool, found: list[bool]) -> str:
@@ -88,8 +88,8 @@ def score_report(case: Case, report: str) -> Result:
     named = any(word in report.lower() for word in case.words)
     found = [has_figure(report, low, high) for low, high in case.figures]
     # TODO: Step 2 - Score is the share of checks passed: (named + number of True in found) / (1 + len(found)); passed only at 1.0
-    score = 0.0
-    passed = False
+    score = (named + sum(found)) / (1 + len(found))
+    passed = score == 1.0
     return Result(score, passed, explain(case, named, found))
 
 
@@ -99,6 +99,7 @@ def run_experiment(cases: list[Case], reporter, system_prompt: str) -> list[tupl
     for case in cases:
         report = reporter(case.question, system_prompt)
         # TODO: Step 3 - Score the report with score_report and append the pair (case, result) to results
+        results.append((case, score_report(case, report)))
     return results
 
 
@@ -124,6 +125,7 @@ def measure_and_adapt(cases: list[Case], reporter, base_prompt: str, rounds: int
         if not failed:
             break
         # TODO: Step 4 - Adapt the prompt: append a newline and the correction_for(case) line of every failed case to prompt
+        prompt = prompt + "\n" + "\n".join(correction_for(case) for case in failed)
     return prompt, results
 
 
@@ -131,7 +133,11 @@ def make_reporter():
     """The System AI as a reporter: a function from (question, system prompt) to the report text."""
     def report(question: str, system_prompt: str) -> str:
         # TODO: Step 5 - Build the Agent with model="us.amazon.nova-2-lite-v1:0", system_prompt=system_prompt and callback_handler=None
-        agent = None
+        agent = Agent(
+            model="us.amazon.nova-2-lite-v1:0",  # Amazon Nova 2 Lite, US cross-Region inference profile
+            system_prompt=system_prompt,
+            callback_handler=None,
+        )
         return str(agent(question))
     return report
 

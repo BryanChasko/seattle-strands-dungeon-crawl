@@ -8,6 +8,7 @@ from tinydb import TinyDB, Query
 from typing import List
 from strands.vended_tools import make_a2a_client
 # TODO: Step 1 - Import create_harness from strands_harness
+from strands_harness import create_harness
 
 app = FastAPI(title="Narrator API (Strands harness)")
 app.add_middleware(
@@ -58,6 +59,12 @@ agent = create_harness(
     # TODO: Step 4 - Disable the built-in tools
     # TODO: Step 5 - Name the session "seattle-campaign"
     # TODO: Step 6 - Force the response to use the StoryOutput model
+    instructions=INSTRUCTIONS,
+    mcp_servers={"dice": {"url": "http://127.0.0.1:8002/mcp"}},
+    tools=[a2a_client],
+    builtin_tools=[],
+    session={"id": "seattle-campaign"},
+    structured_output_model=StoryOutput,
 )
 
 @app.get("/health")

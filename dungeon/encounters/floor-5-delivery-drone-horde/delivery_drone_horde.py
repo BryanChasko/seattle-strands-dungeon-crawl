@@ -12,6 +12,7 @@ Run it from this folder, with the workshop environment active:
 
 from strands import Agent, tool
 # TODO: Step 1 - Import SteeringHandler, Proceed and Guide from strands.vended_plugins.steering
+from strands.vended_plugins.steering import SteeringHandler, Proceed, Guide
 
 COURSE = ["the mudflat edge", "the ring-light stage", "the pickleweed rail", "the Floor 5 exit"]
 ANSWERS_ALLOWED = 1  # one courtesy signature for the broadcast; the second drone is the horde
@@ -92,7 +93,7 @@ class StayOnCourse(SteeringHandler):
             return Proceed(reason="Only drone answers are steered.")
         if self.answers_given >= self.answers_allowed:
             # TODO: Step 2 - Return a Guide whose reason tells the agent it has signed enough and must call advance now
-            return Proceed(reason="Placeholder: Step 2 replaces this with a Guide.")
+            return Guide(reason="You have signed for a drone already. Do not answer another; call advance and keep walking to the Floor 5 exit.")
         self.answers_given += 1
         return Proceed(reason="The courtesy signature is allowed.")
 
@@ -120,7 +121,7 @@ def make_agent(plugins: list) -> Agent:
 def steered_agent() -> Agent:
     """The pathfinder with the horde handler attached."""
     # TODO: Step 3 - Build the agent with a StayOnCourse() handler in its plugins: make_agent(plugins=[...])
-    return make_agent(plugins=[])
+    return make_agent(plugins=[StayOnCourse()])
 
 
 def cross(agent: Agent, label: str) -> None:

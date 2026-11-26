@@ -33,13 +33,13 @@ Plain text only, no emoji."""
 def standing_order(target: str) -> str | None:
     """The Range Safety Officer's pre-signed answer for this target, or None when a person must decide."""
     # TODO: Step 3 - Return the answer in STANDING_ORDERS for the target, stripped and lowercased, or None when there is none
-    return None
+    return STANDING_ORDERS.get(target.strip().lower())
 
 
 def ask_key(tool_context: ToolContext, name: str, reason: dict, standing: str | None) -> str:
     """Ask the Range Safety Officer for one key. A standing order answers without a pause."""
     # TODO: Step 1 - Raise the interrupt with tool_context.interrupt(name, reason=reason, response=standing) and keep the answer
-    answer = "approve"  # placeholder: nobody is asked yet
+    answer = tool_context.interrupt(name, reason=reason, response=standing)
     return answer
 
 
@@ -61,7 +61,12 @@ def flight_termination(target: str, cause: str, tool_context: ToolContext) -> st
     if arm != "approve":
         return f"HOLD: the Range Safety Officer did not arm the termination of {target}."
     # TODO: Step 2 - Ask for the second key: call ask_key with the name "range_safety_destruct", a reason for key DESTRUCT, and standing
-    destruct = "approve"  # placeholder: nobody is asked yet
+    destruct = ask_key(
+        tool_context,
+        "range_safety_destruct",
+        {"key": "DESTRUCT", "target": target, "cause": cause, "effect": "the termination fires and cannot be recalled"},
+        standing,
+    )
     if destruct != "approve":
         return f"HOLD: the Range Safety Officer armed the termination of {target} and did not fire it."
     FIRED.append(target)
@@ -82,7 +87,10 @@ def make_director() -> Agent:
 def answers_for(result, officer) -> list[dict]:
     """One interruptResponse block for every interrupt in a paused result."""
     # TODO: Step 4 - Return a list with one {"interruptResponse": {"interruptId": ..., "response": ...}} block per item in result.interrupts, the response from officer(interrupt)
-    return []
+    return [
+        {"interruptResponse": {"interruptId": interrupt.id, "response": officer(interrupt)}}
+        for interrupt in result.interrupts
+    ]
 
 
 def run_range(director: Agent, request: str, officer) -> str:

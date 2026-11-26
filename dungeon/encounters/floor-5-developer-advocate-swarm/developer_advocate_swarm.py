@@ -15,6 +15,7 @@ from pathlib import Path
 
 from strands import Agent
 # TODO: Step 1 - Import Swarm from strands.multiagent
+from strands.multiagent import Swarm
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # the shared dance floor lives in encounters/
 from dance_floor import dance_round, party_took_the_last_round, scoreboard
@@ -55,7 +56,7 @@ def build_swarm():
     advocates = [advocate(*row) for row in ADVOCATES]
     # TODO: Step 2 - Create a Swarm of the four advocates with the keynote as its entry point
     # TODO: Step 3 - Cap it so a swarm that keeps passing the mic cannot dance forever: at most 4 handoffs and 6 iterations
-    return None
+    return Swarm(advocates, entry_point=advocates[0], max_handoffs=4, max_iterations=6)
 
 
 if __name__ == "__main__":

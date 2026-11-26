@@ -224,7 +224,7 @@ curl -X POST http://127.0.0.1:8009/inquire \
 
 Where did the campaign go between the two runs? Look at the `7_strands_harness/.agent/` folder that appeared next to the file: the folder is where the harness keeps everything a session needs to survive a restart. Under `sessions/session/seattle-campaign/`, the id you chose in Step 5, `snapshot_latest.json` holds the whole conversation, every message exchanged with the Narrator, plus the Narrator's system prompt and model state. At start-up the harness reads the snapshot for that id and the agent picks up where it stopped. The folder is gitignored, so the folder stays on this machine. Long-term memory, the facts the harness distils about the player across campaigns, lives in `.agent/memory` the same way, see [What memory does by default](https://strandsagents.com/docs/user-guide/harness/configure/memory/#what-memory-does-by-default).
 
-Check: the second answer names the Ship Canal and Cordula's Groove, 17, from before the restart, and `7_strands_harness/.agent/sessions/session/seattle-campaign/snapshot_latest.json` exists.
+Check: the second answer names the Ship Canal and Cordula's Groove, 17, from before the restart, and `7_strands_harness/.agent/sessions/session/seattle-campaign/scopes/agent/<agent id>/snapshots/snapshot_latest.json` exists (current Strands keeps one snapshot folder per agent under `scopes/agent/`).
 
 Then meet this floor's opponent with the resumed campaign. The harness rolls through `dice_roll_dice`, the dice server's tool under its `dice` prefix:
 
