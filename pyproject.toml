@@ -1,14 +1,13 @@
 [project]
-name = "airpg-seattle-dungeon-crawl"
+name = "once-upon-agentic-ai"
 version = "1.0.0"
-description = "Seattle Strands Dungeon Crawl: A Visual Lit aiRPG Workshop - learn the Strands Agents SDK by building the System AI that runs a Visual Lit aiRPG dungeon crawl under Seattle, one floor at a time"
+description = "A comprehensive workshop for AI agent development with Strands framework"
 requires-python = ">=3.10"
 dependencies = [
-    # Strands Agents SDK — floor pinned to the release the workshop instructions were
+    # Strands Harness SDK — floor pinned to the release the workshop instructions were
     # last checked against (Oct 2026 docs). Floors 5 and 7 pass make_a2a_client a list of
     # endpoints, the form introduced in 1.57.2.
-    # The cedar extra (cedarpy) is for The Policy Gatekeeper, the optional Floor 2 boss battle.
-    "strands-agents[a2a,cedar]>=1.61",
+    "strands-agents[a2a]>=1.61",
     # Strands harness — the pre-assembled agent used in Floor 7 (create_harness).
     "strands-harness>=0.3",
 
@@ -17,10 +16,9 @@ dependencies = [
     "pydantic",
     "uvicorn",
 
-    # Knowledge Base — Floor 5 indexes the Crawl Handbook (Markdown) in a local ChromaDB
+    # Knowledge Base & Document Processing
     "chromadb",
-    # PDF text extraction for The Paper Trail, the optional Floor 5 encounter that adds a PDF to that knowledge base
-    "pypdf>=5",
+    "pypdf",
 
     # Database
     "tinydb",
@@ -45,20 +43,6 @@ dependencies = [
     # 1.40 is the first release with the bedrock-agentcore stop_runtime_session operation.
     "boto3>=1.40",
 ]
-
-[dependency-groups]
-# Floor 5 checks on the solution branch: agent_factory isolation and the agent cards served over HTTP
-dev = [
-    "httpx>=0.28.1",
-    "pytest>=9.1.1",
-    "pytest-asyncio>=1.4.0",
-    # The Floor 8 tests import the AgentCore runtime and its Strands memory integration. Each
-    # brick's own pyproject.toml declares it for AgentCore; this makes it available locally.
-    "bedrock-agentcore[a2a,strands-agents]>=1.24",
-]
-
-[tool.pytest.ini_options]
-asyncio_default_fixture_loop_scope = "function"
 
 [tool.uv]
 required-environments = [

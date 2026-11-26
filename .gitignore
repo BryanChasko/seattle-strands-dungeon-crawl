@@ -198,13 +198,14 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 .DS_Store
-*.pdf
-# Strands REPL state files
+*.pdf# S
+trands REPL state files
 repl_state/
-*.pkl
-# Workshop solutions (uncomment to hide from participants)
+*.pkl# Workshop s
+olutions (uncomment to hide from participants)
 # solutions/
 
+DnD_BasicRules_2018.pdf
 A2A_BUG_REPORT.md
 output/
 
@@ -215,17 +216,8 @@ rules_knowledge_base/
 # Strands harness state (Floor 7): sessions and long-term memory
 .agent/
 
-# Ask the System study companion: its search index and chat session
-dungeon/study/.state/
-
 # AgentCore deploy floors (8+): deployment targets and CLI state are account-specific
 *_agentcore_*/**/aws-targets.json
 *_agentcore_*/**/.cli/
 # Re-include the CDK stack sources (root "lib/" rule would hide them)
 !*_agentcore_*/**/cdk/lib/
-
-# Optional encounters: local state the Floor 8 Mid-Song Save writes
-.mid-song-save/
-
-# raw renders and run logs live in ~/writing/art/once-upon-agentic-ai/experiments
-experiments/

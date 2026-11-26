@@ -1,0 +1,36 @@
+{
+  "brand_exceptions": [
+    "BRAND.md 3 people/faces ban lifted: the banner spec is a character scene (precedent: sso spider reference)",
+    "BRAND.md 3 glyph ban lifted for the grenade runes the banner spec requests"
+  ],
+  "bytes": 227284,
+  "file": "banner-1680x720.webp",
+  "format": "webp lossy q84",
+  "render": {
+    "endpoint": "POST https://api.meta.ai/v1/images/generations",
+    "model": "muse-image-1.0",
+    "prompt_sha256": "4b6d6d03d02b0de77de2e3964df5caf22e8fc0ba68f53134063213407e3b0b86",
+    "size": "1792x768"
+  },
+  "sha256": "3f1d0537bf9ffde2def5546a91da6b64023402fdaca767beb2be12f5841fb538",
+  "size": [1680, 720],
+  "source": {
+    "raw": "banner-b.png",
+    "raw_kept_at": "/home/bryanchasko/writing/art/once-upon-agentic-ai/raw/banner-b.png",
+    "raw_sha256": "4a4b600562532b4259b7c03dc712cccb39849c335cbef6a9b9ca418f6c7da1c6",
+    "request": "images/src/banner-b.request.json"
+  },
+  "tokens": {
+    "ben_day": "#d7c7ee",
+    "vignette": "#0B0E14 (obsidian, banner spec base; deviation from BRAND.md house navy #050A18 for a GitHub surface)"
+  },
+  "tools": {
+    "pillow": "12.2.0",
+    "python": "3.12.3"
+  },
+  "transforms": [
+    "cover-crop 1680x720 lanczos",
+    "vignette feather 50 to #0B0E14",
+    "ben-day 10px r2 alpha 10"
+  ]
+}
