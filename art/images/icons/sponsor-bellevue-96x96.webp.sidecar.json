@@ -1,0 +1,39 @@
+{
+ "file": "sponsor-bellevue-96x96.webp",
+ "bytes": 1972,
+ "format": "webp lossy q88",
+ "render": {
+  "endpoint": "https://api.meta.ai/v1/images/generations",
+  "model": "muse-image-1.0",
+  "prompt_sha256": "e4b56b69ebb954c2e40b5219ee32fa8bdeec394c9c99ecf40a8dc1ab5a1161ab",
+  "size": "1024x1024"
+ },
+ "sha256": "7a4a693433bf7cafe3a2c65a6025ccbdfd095f4bfe9e8810cecf5617651d88ed",
+ "size": [
+  96,
+  96
+ ],
+ "source": {
+  "raw": "icon-sponsor-bellevue.png",
+  "raw_kept_at": "/home/bryanchasko/writing/art/once-upon-agentic-ai/experiments/2026-11-08-batch-05/raw/icon-sponsor-bellevue.png",
+  "raw_sha256": "88d3c6ece2a9f61b6fd3ce67c337c5167469072d04465559e3929c8342ef99de",
+  "request": "images/src/icon-sponsor-bellevue.request.json"
+ },
+ "tokens": {
+  "ben_day": "#d7c7ee",
+  "vignette": "#0B0E14 (obsidian, banner spec base)"
+ },
+ "tools": {
+  "pillow": "11.3.0",
+  "python": "3.13.5"
+ },
+ "transforms": [
+  "center crop 12% margin",
+  "resize 96x96 lanczos",
+  "no dots, no vignette (UI glyph)"
+ ],
+ "brand_exceptions": [
+  "BRAND.md 3 people/faces ban lifted: character cards for the cast and the opponents of the crawl",
+  "interface frame in the render is blank by prompt; no model text"
+ ]
+}

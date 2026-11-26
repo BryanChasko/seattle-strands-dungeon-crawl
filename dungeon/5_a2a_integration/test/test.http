@@ -1,0 +1,59 @@
+###
+POST http://0.0.0.0:8009/inquire
+
+{
+    "question": "Roll a d20. The audience is watching."
+}
+###
+POST http://0.0.0.0:8009/inquire
+
+{
+  "question": "Show me what agents are currently discovered, and rate each one for the audience."
+}
+
+###
+POST http://0.0.0.0:8009/inquire
+
+{
+    "question": "How does the Final Beat work?"
+}
+
+###
+
+POST http://0.0.0.0:8009/inquire
+
+{
+    "question": "Register the party with the System: Cordula Vance and Barnaby."
+}
+
+###
+
+POST http://0.0.0.0:8009/inquire
+
+{
+    "question": "What are Barnaby's Dexterity and Mana?"
+}
+
+###
+
+POST http://0.0.0.0:8009/inquire
+
+{
+    "question": "Cordula Vance (she/her), a Human (Seattle Native) Amphibious Breacher, and Barnaby (he/him), her octopus party leader, just came through the collapse at Pier 59 with Shelly and Chonks. Describe the surroundings with real Puget Sound plants and create an atmosphere the player can bounce off of. Don't make more than 100 words."
+}
+
+###
+
+POST http://0.0.0.0:8009/inquire
+
+{
+    "question": "Cordula challenges the Quarterly Close Accountant to a dance-off at the Pier 59 collapse. Run round one."
+}
+
+###
+
+POST http://0.0.0.0:8009/inquire
+
+{
+    "question": "Tell me about the whole party"
+}
