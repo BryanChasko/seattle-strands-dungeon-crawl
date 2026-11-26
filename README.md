@@ -1,149 +1,97 @@
-# 4:11 AM PDT | June 11 2029 | Taking on Water
-<p align="center">
-prelude
-<p align="center">
-<img src="art/images/wordmark-1200x240.webp" alt="Wordmark: Seattle Strands Dungeon Workshop, a Visual aiLitRPG Adventure" width="720">
-</p>
+# aiRPG Seattle Dungeon Crawl: Learn the Strands Agents SDK One Floor at a Time
 
-<p align="center"><em>
-<img src="art/images/icons/system-ai-96x96.webp" alt="" width="28" height="28"> **System Message: pre-recorded announcement from <i>ExalE</i>, System AI:** "GOOD MORNING, SEATTLE, Where the Music Matters. Welcome to *Dungeon Crawl Seattle Strands*
+![Cordula, in an orange drysuit with Barnaby the octopus in a water tank on her back and Chonks the lumpsucker on her forearm, strikes a dance pose with her kayak paddle while a startled accountant and an investment banker slip on the flooded floor of collapsed Pier 59. Shelly the geoduck puffs sea mist, bull kelp hangs overhead, and the Space Needle shows through the breach](images/banner-1680x720.webp)
 
-We had a bit of a mishap and things are not coming up Milhouse. My predictives show I'm about to take on massive water likely meaning by the time you are hearing this, several of my systems are down
+_"Roll for Initiative... in Python!"_
 
-Those of you still alive can stay and gain access to a dungeon in which... eventually... I will guide you to an exit where you can totally live in peace thereafter and pursue happiness and all that jazz
+A hands-on workshop that teaches the [Strands Agents SDK](https://strandsagents.com/) through a LitRPG dungeon crawl under Seattle. The game AI that runs the crawl breaks on its first morning, and each floor rebuilds one piece of it in Python on Amazon Nova 2 Lite: one agent first, then tools, an MCP server, agents that talk over A2A, a web interface, Strands harness, and finally the whole game on Amazon Bedrock AgentCore.
 
-But first, you need to fix me. 
+## The Collapse
 
+> <img src="images/cards/cast-cordula-640x640.webp" alt="" width="28" height="28"> **CORDULA'S LOG, DAY 1, WEDNESDAY, JUNE 17, 2026, 0551, PIER 59.**
+>
+> High water was due at 0556. I was in my kayak under Pier 59 on the dawn debris sweep, tied up at the aquarium's intake screens, where the crabs crowd.
+>
+> I had seen his shadow three times before: twice over the Gertie wreck at the Narrows, once under Pier 57. Something too big to be an octopus, always just past where the light reached. I logged every sighting as unconfirmed. I had never met him face to face.
+>
+> At 0551 every phone on the waterfront lit up with the same blank violet box. Then the pier folded, down and in, the way a map folds, and Elliott Bay came in after it.
+>
+> The shadow was there, close this time, tangled in the collapsing intake screen: an octopus bigger than any on record, one eye on me. I had about four seconds. I spent them going toward him instead of away, because nobody else was awake to cut him loose. I cut him free with my rescue knife; he wrapped two arms around me and the kayak and held us both clear of the debris as the fold carried us down.
 
+> <img src="images/icons/system-ai-96x96.webp" alt="" width="28" height="28"> **System AI:** "GOOD MORNING, SEATTLE. Welcome to *Dungeon Crawl: Seattle*, season one, live to a galaxy of viewers. A small problem. I built your dungeon for a dry city, and the Sound came in. My voice, my dice, my rules and my memory are scattered across eight floors under your feet. So you will rebuild me, Crawler, one floor at a time. The audience is watching. Try to be interesting."
 
+> <img src="images/cards/cast-cordula-640x640.webp" alt="" width="28" height="28"> **CORDULA:** I have rebuilt engines with less to go on. I keep a log. The log is what happened. The steps are what I type next.
 
-Your survival: reconstruct the System AI using the Strands Agents SDK. In the workshop examples, Amazon Nova 2 Lite endpoints are used to unlock the stairwell to the next floor of the dungeon. Rely on dancing skills, & stealth. 
-
-hurting people is bad. I have to explain this?</em></p>
+### [Begin the descent: Floor 0, The Stairwell](workshop/floor-0.md)
 
 ---
 
-## The Fall
+## Index
 
-At 0551 every phone on the waterfront lit up with the same blank violet box. Then Pier 59 did not crash: it folded, the way a map folds, down and in, and the Sound came in after it. The flood took the System AI apart. Its voice, its dice, its rules and its memory are scattered across the floors under Seattle. It can still push one-way status reports through the broadcast relay, but it cannot hear you back, roll a fair die, quote a rule or remember who did what.
+### The Workshop
 
-<img src="art/images/icons/system-ai-96x96.webp" alt="" width="28" height="28"> **SYSTEM NOTIFICATION**
+- [Workshop guide](workshop/README.md): the dungeon map, every floor and every side passage
+- [Floor 0: The Stairwell](workshop/floor-0.md): clone the repository, install uv and Python, and check access to Amazon Nova 2 Lite
+- [Side Passages](workshop/encounters/README.md): 34 optional sidequests, dance-offs and boss battles, each one off a floor
+- [The Exit](workshop/cleanup.md): stop the local services, remove the Floor 8 AWS resources and delete the generated files
 
-**DUNGEON CRAWL: SEATTLE. SEVERITY-1 OPEN. Q2 MIGRATION WINDOW.**
-
-The Sound came in at 0551. My voice, my dice, my rules, my memory are scattered across eight floors under your feet. Rebuild me, Crawler. The review board is watching.
-
----
-
-## The Meeting
-
-> <img src="art/images/cards/cast-cordula-640x640.webp" alt="" width="28" height="28"> **CORDULA'S LOG, DAY 1, MONDAY, JUNE 11, 0547, PIER 59.**
->
-> High tide was at 0356, so I was on the water by 0530: touring kayak, drysuit, float vest, the debris sweep the Soundkeepers run every week. Fog on Elliott Bay, gulls, a ferry horn out past the breakwater. Normal.
->
-> I had seen his shadow before. Survey runs over the Gertie wreck at the Narrows, dawn sweeps under the downtown piers. Something too big to be an octopus, always just past visibility. August 12, 2025, slack before the ebb at the wreck. October 3, 2025, under Pier 57 on a dawn sweep. February 19, 2026, another survey pass at Gertie. Three logs, each marked unconfirmed. I never met him face to face until the fold.
->
-> At 0551 every phone on the waterfront lit up with the same blank violet box. No text in it. Then the pier moved.
->
-> The pier did not crash. The pier folded, the way a map folds, down and in, and the Sound came in after it. The shadow was there, close this time, tangled in the collapsing intake screen: an octopus bigger than any on record, one eye on me.
->
-> I had about four seconds. I spent them going toward him instead of away, because nobody else was awake to cut him loose. I cut him free with one of my karambits; he wrapped two arms around me and the kayak and held us both clear of the debris as the fold carried us down. Each of us saved the other.
->
-> Then a voice came out of the water, loud enough to rattle my teeth.
-
-<p align="center">
-<img src="art/images/floors/gertie-wreck-den-1200x675.webp" alt="The sunken Galloping Gertie wreck on the floor of the Tacoma Narrows: anemone-covered girders turned into a reef, a dark den mouth under a fallen girder, and the tip of one enormous red octopus arm curling out" width="720">
-</p>
-
-<p align="center"><em>Something lives in the wreck of Galloping Gertie. The divers call it the King Octopus. Its name is Barnaby.</em></p>
-
-One arm out of a den is all the cover shows. The rest of Barnaby is earned in the dungeon.
-
-[Enter the dungeon: Floor 0](dungeon/workshop/floor-0.md)
-
----
-
-<details>
-<summary><strong>What you build</strong></summary>
-
-You rebuild the System AI of a LitRPG dungeon crawl under Seattle: a live cloud-migration test and compliance audit that went wrong when the Sound flooded its dry-city infrastructure mid-window. The System AI evaluates efficiency, runs performance stress-tests, files metric reports, and chases its quarterly throughput SLA. You start with one agent on a terminal and finish with a production multi-agent System AI:
-
-- One agent that answers, then tools it can call, first vended, then handcrafted.
-- A dice service behind MCP, then a party of agents talking over A2A.
-- A web arena where a reader plays the crawl against the System you built.
-- A production deployment on AgentCore: dice, character and rules services with memory and a knowledge base, under one orchestrating System AI.
-
-Every agent on every floor runs on Amazon Nova 2 Lite. Each floor rebuilds one more subsystem, and the full design map is in [The System](dungeon/workshop/world/the-system.md).
-
-</details>
-
----
-
----
-
-<details>
-<summary><strong>How you learn</strong></summary>
-
-Every Safe Room has a terminal on the broadcast relay. The Strands manual is there, and so is the open web's teaching. Read the docs, watch an explainer, read a working sample, then type it yourself.
-
-**Free courses and samples**
-
-- Morgan Willis, "Building AI agent harnesses with Strands Agents", 14 free videos -- [start with video 01](https://www.youtube.com/watch?v=NAEX4ORLkbQ), or read Bryan's [companion page](https://bryanchasko.com/strands-agents-course/)
-- Elizabeth Fuentes, [Strands samples on GitHub](https://github.com/elizabethfuentes12) -- MIT-0 licensed, model-agnostic
-- [Strands Agents SDK](https://strandsagents.com/)
-
-The full floor map, with story and plate art for every floor, is the [Dungeon Map](dungeon/workshop/README.md#the-dungeon-map).
-
-</details>
-
----
-
-Clone `main` to build; switch to `solution` when a TODO blocks progress. Details below.
-
-<details>
-<summary><strong>Requirements</strong></summary>
-
-Every agent on every floor runs on Amazon Nova 2 Lite on Amazon Bedrock:
-
-```
-model_id: us.amazon.nova-2-lite-v1:0
-region: us-west-2
-```
-
-**What you need**
-
-- Python 3.10 or later
-- [uv](https://docs.astral.sh/uv/) (or pip)
-- AWS credentials with permission to invoke Amazon Nova 2 Lite in us-west-2
-- Docker (the Sandbox Tide Pool encounter and the web build) and Node.js (Floor 6's web interface)
-- Floor 8 only: Node.js 20 or later and the [AgentCore CLI](https://github.com/aws/agentcore-cli)
-
-**What it costs**
-
-Floors bill for Amazon Nova 2 Lite calls: see [What a Turn Costs](dungeon/workshop/floor-1.md#what-a-turn-costs). Floor 8 also leaves billable resources in your account until cleanup: see [What Floor 8 Costs](dungeon/workshop/floor-8.md#what-floor-8-costs) and [The Exit](dungeon/workshop/cleanup.md).
-
-**Preflight check**
+### Quick Start
 
 ```bash
-uv run python dungeon/0_stairwell/preflight.py
+git clone https://github.com/BryanChasko/aiRPG-seattle-dungeon-crawl.git
+cd aiRPG-seattle-dungeon-crawl
+uv python install          # if Python 3.10 or later is missing
+uv sync                    # creates .venv/ with every dependency
+source .venv/bin/activate  # .venv\Scripts\activate on Windows
 ```
 
-</details>
+No `uv`? Install `uv` from [docs.astral.sh/uv](https://docs.astral.sh/uv/getting-started/installation/), or use plain pip: `pip install .` from the repository root.
 
-<details>
-<summary><strong>Branches</strong></summary>
+Every agent on every floor runs on Amazon Nova 2 Lite on Amazon Bedrock (`us.amazon.nova-2-lite-v1:0`). The AWS credentials need permission to invoke Amazon Nova 2 Lite in us-west-2; [Floor 0](workshop/floor-0.md) checks them. Floor 8 deploys to AgentCore: the workshop Code Editor already has everything Floor 8 needs; in a personal AWS account, Floor 8 also needs Node.js 20 or later and the [AgentCore CLI](https://github.com/aws/agentcore-cli), which the Floor 8 instructions install.
 
-- `main`: the skeleton to clone, with `# TODO` markers to fill in
-- `solution`: the same files with the answers written below each TODO, run end to end
+### The Dungeon Map
 
-Use `solution` when a TODO blocks progress.
+| Floor | Folder | What gets built |
+|---|---|---|
+| 0. The Stairwell | [instructions](workshop/floor-0.md) | Python, uv and this repository |
+| 1. Agent Summoning | [`1_strands_basics/`](1_strands_basics/) | First agent, a system prompt, debug logs |
+| 2. The Vending Machines | [`2_vended_tools/`](2_vended_tools/) | Tools that ship with the SDK (vended tools): `http_request` on the Open5e API to look up a giant octopus; bonus: `shell` + `file_editor` gated by `HumanInTheLoop` |
+| 3. The Crafting Table | [`3_custom_tools/`](3_custom_tools/) | A custom `@tool`: the dice roller |
+| 4. The Portal Room - MCP | [`4_mcp_integration/`](4_mcp_integration/) | The same dice roller served over MCP, and an agent that calls the MCP server |
+| 5. Party Formation - A2A | [`5_a2a_integration/`](5_a2a_integration/) | Rules Agent (searching the Crawl Handbook) + Character Agent over A2A, and the Narrator orchestrator with structured output that runs dance-offs |
+| 6. The Arena - Web Interface | [web UI](https://bryanchasko.github.io/aiRPG-seattle-dungeon-crawl/) | Play the Narrator through the browser |
+| 7. The Armory - Strands harness (optional) | [`7_strands_harness/`](7_strands_harness/) | The Narrator API rebuilt with `create_harness()` |
+| 8. Production - AgentCore | [`8_agentcore_production/`](8_agentcore_production/) | The dice server, the Character Agent, the Rules Agent and the Narrator deployed to AgentCore Runtime with the `agentcore` CLI, IAM-signed MCP and A2A calls, characters and conversation in AgentCore Memory, rules in a managed knowledge base |
+| The Exit | [instructions](workshop/cleanup.md) | Stop the local services, remove the Floor 8 AWS resources and delete the generated files |
 
-</details>
+Complete the floors in order: each one reuses what the previous one built. Floor 7 is optional: Floor 8 starts again from the Floor 5 code.
 
-<details>
-<summary><strong>Tests</strong></summary>
+### The World
 
-The tests live on the `solution` branch:
+- [World guide](workshop/world/README.md): where everything the agents say about the world comes from
+- [The Story](workshop/world/story.md): Cordula's crawl, floor by floor, and how each obstacle is a Strands lesson
+- [The Timeline](workshop/world/timeline.md): the fourteen days of the crawl, with the tides
+- [The Cast](workshop/world/cast.md): character sheets for the party and for the System AI that runs the crawl
+- [The System](workshop/world/the-system.md): the LitRPG design, mapped to the floor that builds each layer
+- [Seattle, Under the Sound](workshop/world/seattle.md): whose land this is, the eight dungeon floors and the Puget Sound plants and habitats the floors are built from
+- [The Crawl Handbook](workshop/world/crawl-handbook/): the rules, and the knowledge base the Rules Agent searches
+
+### Stuck? Ask the System
+
+[`study/ask_the_system.py`](study/README.md) is a study companion built with Strands: ask it about any floor, TODO, error or Strands API, and it answers from this repository and the Strands API reference, with citations. It gives hints before answers.
+
+### Branches
+
+- `main`: the skeleton to clone, with `# TODO` markers to fill in.
+- `solution`: the same files with the answers written below each TODO, run end to end on Amazon Nova 2 Lite. Floor 8 there is the end-of-8.4 state, served by AgentCore. Use it when a TODO blocks progress.
+
+### Dependencies
+
+The workshop ships no lockfile (`uv.lock` is gitignored), so `uv sync` installs the latest compatible releases. Three bounds are pinned in `pyproject.toml`, each with a comment explaining why: a floor on `strands-agents` (the release the instructions were written against), `strands-harness` for Floor 7, and a `mcp<2` ceiling because mcp 2.0 renamed the `FastMCP` server class Floor 4 teaches. If a floor breaks against a newer release, please open an issue.
+
+### Tests
+
+The tests live on the `solution` branch, because the tests import the finished Floor 5 agents:
 
 ```bash
 git switch solution
@@ -151,34 +99,18 @@ uv sync --group dev
 uv run pytest tests/
 ```
 
-The tests cover every floor without calling Amazon Nova 2 Lite or AWS: agents, tools, MCP server, A2A servers, Groove and Mana, the handbook knowledge base, the harness options, and the Floor 8 memory, retrieval and entrypoint. The web interface has its own suite in `site/web/` (`npm ci, then `npx vitest run`). [Coverage page](dungeon/workshop/coverage.md).
+The tests cover every floor without calling Amazon Nova 2 Lite or AWS: the agent each floor builds, that agent's tools and the tool specs, the dice math, the MCP server, the Floor 5 A2A servers (module imports, the per-context `agent_factory` isolation, the agent card served over HTTP), Groove and Mana, the handbook knowledge base, the harness options, and the Floor 8 memory records, retrieval and entrypoint. The web interface has its own suite in `web/` (`npm ci`, then `npx vitest run`). [workshop/coverage.md](workshop/coverage.md) maps every exercise of the original workshop to the floor and the test that covers it.
 
-</details>
+### Credits
 
-<details>
-<summary><strong>Dependencies</strong></summary>
+This crawl is built on *Once Upon Agentic AI*, the AWS sample workshop that first taught the Strands Agents SDK through a role-playing game. Every exercise of *Once Upon Agentic AI* is still here; the coverage page shows where. The Narrator does the job that workshop gives the agent that runs the game.
 
-The workshop ships no lockfile (`uv.lock` is gitignored), so `uv sync` installs the latest compatible releases. Three bounds are pinned in `pyproject.toml`, each with a comment explaining why: a floor on `strands-agents`, `strands-harness` for Floor 7, and a `mcp<2` ceiling because mcp 2.0 renamed the `FastMCP` server class Floor 4 teaches.
-
-If a floor breaks against a newer release, please open an issue.
-
-</details>
-
-<details>
-<summary><strong>Contributing</strong></summary>
+### Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
-</details>
-
 ---
 
-This crawl builds on Once Upon Agentic AI, the AWS sample workshop that first taught the Strands Agents SDK through a role-playing game. Every exercise of that workshop is still here; the [coverage page](dungeon/workshop/coverage.md) maps them. The game-running agent the source workshop calls the Narrator is the System AI here: Narrator is that job's code name, and the System AI is the one speaker who runs the crawl.
+_"The best way to predict the future is to build the agents that will create it."_ - Modern Developer Wisdom
 
-**The World**: [World guide](dungeon/workshop/world/README.md) -- [The Story](dungeon/workshop/world/story.md) -- [Timeline](dungeon/workshop/world/timeline.md) -- [The System](dungeon/workshop/world/the-system.md) -- [Seattle, Under the Sound](dungeon/workshop/world/seattle.md)
-
-**Stuck?**: [`dungeon/study/ask_the_system.py`](dungeon/study/README.md) is a study companion built with Strands. Ask it about any floor, TODO, error or Strands API, and it answers from this repository and the Strands API reference, with citations.
-
----
-
-_The System AI is watching. Happy crawling, Crawler._
+_The System is watching. Happy crawling, Agent Builder._

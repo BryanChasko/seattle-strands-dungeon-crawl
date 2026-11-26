@@ -1,7 +1,7 @@
 [project]
 name = "airpg-seattle-dungeon-crawl"
 version = "1.0.0"
-description = "Seattle Strands Dungeon Crawl: A Visual Lit aiRPG Workshop - learn the Strands Agents SDK by building the System AI that runs a Visual Lit aiRPG dungeon crawl under Seattle, one floor at a time"
+description = "Learn the Strands Agents SDK by building the System, the AI that runs a LitRPG dungeon crawl under Seattle, one floor at a time"
 requires-python = ">=3.10"
 dependencies = [
     # Strands Agents SDK — floor pinned to the release the workshop instructions were
@@ -45,6 +45,20 @@ dependencies = [
     # 1.40 is the first release with the bedrock-agentcore stop_runtime_session operation.
     "boto3>=1.40",
 ]
+
+[dependency-groups]
+# Floor 5 checks on the solution branch: agent_factory isolation and the agent cards served over HTTP
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    # The Floor 8 tests import the AgentCore runtime and its Strands memory integration. Each
+    # brick's own pyproject.toml declares it for AgentCore; this makes it available locally.
+    "bedrock-agentcore[a2a,strands-agents]>=1.24",
+]
+
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
 
 [tool.uv]
 required-environments = [
